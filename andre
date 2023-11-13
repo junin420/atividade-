@@ -1,0 +1,64 @@
+-- Remover as tabelas se já existirem (Isso vai excluir todos os dados das tabelas)
+DROP TABLE IF EXISTS Pagamento;
+DROP TABLE IF EXISTS Reserva;
+DROP TABLE IF EXISTS Cliente;
+DROP TABLE IF EXISTS Operadora_Cartao;
+DROP TABLE IF EXISTS Cliente_Cartao_Credito;
+DROP TABLE IF EXISTS Quarto;
+
+-- Criar a nova tabela Cliente com a coluna "id" como chave primária
+CREATE TABLE Cliente (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    CPF CHAR(11),
+    Nome VARCHAR(255),
+    Telefone VARCHAR(15),
+    Sexo VARCHAR(50),
+    Nacionalidade VARCHAR(50),
+    Quantidade_de_pessoas_participantes INT
+);
+
+-- Agora você pode criar a tabela Reserva novamente com a coluna "Cliente_id"
+CREATE TABLE Reserva (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    Cliente_id INT,
+    Data_Reserva DATE,
+    Data_Check_In DATE,
+    Data_Check_Out DATE,
+    Status VARCHAR(50),
+    Valor_Total DECIMAL(10, 2),
+    Tipo_Quarto VARCHAR(50),
+    Numero_Quarto INT,
+    FOREIGN KEY (Cliente_id) REFERENCES Cliente (id)
+);
+
+-- Agora você pode criar a tabela Pagamento novamente
+CREATE TABLE Pagamento (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    Reserva_ID INT,
+    Valor_Pago DECIMAL(10, 2),
+    Data_Pagamento DATE,
+    FOREIGN KEY (Reserva_ID) REFERENCES Reserva (ID)
+);
+
+-- Tabela Operadora_Cartao
+CREATE TABLE Operadora_Cartao (
+    Codigo_Operadora INT PRIMARY KEY,
+    Nome_Operadora VARCHAR(50)
+);
+
+-- Tabela Cliente_Cartao_Credito
+CREATE TABLE Cliente_Cartao_Credito (
+    CPF_Cliente CHAR(11),
+    Numero_Cartao_Credito CHAR(16) PRIMARY KEY,
+    Codigo_Operadora INT,
+    FOREIGN KEY (CPF_Cliente) REFERENCES Cliente (CPF),
+    FOREIGN KEY (Codigo_Operadora) REFERENCES Operadora_Cartao (Codigo_Operadora)
+);
+
+-- Tabela Quarto
+CREATE TABLE Quarto (
+    Numero_Quarto INT PRIMARY KEY,
+    Andar INT,
+    Tipo_Quarto VARCHAR(50),
+    Preco_Por_Noite DECIMAL(10, 2)
+);
